@@ -3,11 +3,9 @@ import re
 import sys
 from collections import Counter
 
+import click
 from tqdm import tqdm
 from twarc import ensure_flattened
-
-
-consulta = sys.argv[1]
 
 
 def get_words(text):
@@ -17,16 +15,24 @@ def get_words(text):
     return text.split()
 
 
-counts = Counter()
-with open(consulta) as f:
-    lines = sum(1 for line in f)
-with open(consulta) as f:
-    for line in tqdm(f, total=lines):
-        for t in ensure_flattened(json.loads(line)):
-            text = t['text']
-            words = get_words(text)
-            counts.update(words)
+@click.command()
+@click.argument('infile')
+@click.argument('outfile')
+def main(infile, outfile):
+    counts = Counter()
+    with open(infile) as f:
+        lines = sum(1 for line in f)
+    with open(infile) as f:
+        for line in tqdm(f, total=lines):
+            for t in ensure_flattened(json.loads(line)):
+                text = t['text']
+                words = get_words(text)
+                counts.update(words)
 
-with open('words.csv', 'w') as f:
-    for w, c in counts.most_common():
-        f.write(w + ',' + str(c) + '\n')
+    with open(outfile, 'w') as f:
+        for w, c in counts.most_common():
+            f.write(w + ',' + str(c) + '\n')
+
+
+if __name__ == '__main__':
+    main()
