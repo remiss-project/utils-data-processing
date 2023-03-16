@@ -1,6 +1,7 @@
 import json
 import re
 import sys
+import unicodedata
 from collections import Counter
 
 import click
@@ -8,10 +9,17 @@ from tqdm import tqdm
 from twarc import ensure_flattened
 
 
+def strip_accents(text):
+    text = unicodedata.normalize('NFD', text)
+    text = [c for c in text if unicodedata.category(c) != 'Mn']
+    return ''.join(text)
+
+
 def get_words(text):
     text = text.lower()
+    text = strip_accents(text)
     text = re.sub('(\w+:\/\/\S+)', '', text) #URL fora
-    text = re.sub('[^ a-z0-9_#@ñçáéíóúàèìòùäëïöü]', ' ', text)
+    text = re.sub('[^ a-z0-9_#@]', ' ', text)
     return text.split()
 
 
