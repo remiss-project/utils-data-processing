@@ -5,6 +5,8 @@ import click
 from tqdm import tqdm
 from twarc import ensure_flattened
 
+from strip_accents import strip_accents
+
 
 def contains_keywords(text, keywords):
   for k in keywords:
@@ -23,16 +25,6 @@ def get_text(tweet):
   return tweet['text']
 
 
-def parse(text):
-  substitutions = {
-    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ü': 'u', 'ñ': 'n'
-  }
-  text = text.lower()
-  for x, y in substitutions.items():
-    text = text.replace(x, y)
-  return text
-
-
 @click.command()
 @click.option('--count-lines', '-c', is_flag=True, default=False)
 @click.argument('keywords')
@@ -40,7 +32,7 @@ def parse(text):
 @click.argument('outfile')
 def main(count_lines, keywords, infile, outfile):
   with open(keywords) as f:
-    keywords = [parse(k) for k in json.load(f)['keywords']]
+    keywords = [strip_accents(k) for k in json.load(f)['keywords']]
 
   if count_lines:
     with open(infile) as f:
@@ -52,7 +44,7 @@ def main(count_lines, keywords, infile, outfile):
     with open(outfile, 'w') as outfile:
       for line in tqdm(infile, total=lines):
         for t in ensure_flattened(json.loads(line)):
-          text = parse(get_text(t))
+          text = strip_accents(get_text(t))
           if contains_keywords(text, keywords):
             outfile.write(json.dumps(t) + '\n')
 
