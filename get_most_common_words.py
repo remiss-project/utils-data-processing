@@ -5,8 +5,8 @@ import unicodedata
 from collections import Counter
 
 import click
-from tqdm import tqdm
 from twarc import ensure_flattened
+from twarc.decorators2 import FileSizeProgressBar
 
 
 def strip_accents(text):
@@ -24,22 +24,20 @@ def get_words(text):
 
 
 @click.command()
-@click.argument('infile')
-@click.argument('outfile')
+@click.argument('infile', type=click.File('r'))
+@click.argument('outfile', type=click.File('w'))
 def main(infile, outfile):
     counts = Counter()
-    with open(infile) as f:
-        lines = sum(1 for line in f)
-    with open(infile) as f:
-        for line in tqdm(f, total=lines):
+    with FileSizeProgressBar(infile, outfile) as progress:
+        for line in infile:
             for t in ensure_flattened(json.loads(line)):
                 text = t['text']
                 words = get_words(text)
                 counts.update(words)
+            progress.update(len(line))
 
-    with open(outfile, 'w') as f:
-        for w, c in counts.most_common():
-            f.write(w + ',' + str(c) + '\n')
+    for w, c in counts.most_common():
+        outfile.write(w + ',' + str(c) + '\n')
 
 
 if __name__ == '__main__':
