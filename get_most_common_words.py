@@ -1,11 +1,12 @@
 import json
+import os
 import re
 import sys
 from collections import Counter
 
 import click
+from tqdm import tqdm
 from twarc import ensure_flattened
-from twarc.decorators2 import FileSizeProgressBar
 
 from strip_accents import strip_accents
 
@@ -23,7 +24,7 @@ def get_words(text):
 @click.argument('outfile', type=click.File('w'))
 def main(infile, outfile):
     counts = Counter()
-    with FileSizeProgressBar(infile, outfile) as progress:
+    with tqdm(total=os.stat(infile.name).st_size, unit='B') as progress:
         for line in infile:
             for t in ensure_flattened(json.loads(line)):
                 text = t['text']
