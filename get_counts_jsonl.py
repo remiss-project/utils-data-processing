@@ -20,7 +20,8 @@ def get_index(granularity):
 @click.argument('outfile', type=click.File('w'))
 @click.option(
     '--granularity', 'granularity',
-    type=click.Choice(['day', 'hour', 'minute']), default='day'
+    type=click.Choice(['day', 'hour', 'minute']),
+    default='day', show_default=True
 )
 def main(infile, outfile, granularity):
     counts = dict()

@@ -6,10 +6,11 @@ import click
 
 @click.command()
 @click.argument('infile', type=click.File('r'))
-@click.argument('outfile')
+@click.argument('outfile', type=click.Path())
 @click.option(
     '--granularity', 'granularity',
-    type=click.Choice(['day', 'hour', 'minute']), default='day'
+    type=click.Choice(['day', 'hour', 'minute']),
+    default='day', show_default=True
 )
 def main(infile, outfile, granularity):
     for window in json.load(infile):

@@ -5,8 +5,8 @@ import graph_tool.all as gt
 
 
 @click.command()
-@click.argument('infile')
-@click.argument('outfile')
+@click.argument('infile', type=click.Path(exists=True))
+@click.argument('outfile', type=click.File('w'))
 @click.option(
     '--component', 'component',
     type=click.Choice(['weak', 'strong']), default=None
@@ -14,9 +14,9 @@ import graph_tool.all as gt
 @click.option(
     '--layout', 'layout',
     type=click.Choice(['sfdp', 'arf', 'fr']),
-    default='sfdp'
+    default='sfdp', show_default=True
 )
-@click.option('--weight', 'weight', default='weight')
+@click.option('--weight', 'weight', default='weight', show_default=True)
 def main(infile, outfile, component, layout, weight):
     g = gt.load_graph(infile)
 
@@ -35,8 +35,7 @@ def main(infile, outfile, component, layout, weight):
         layout = gt.fruchterman_reingold_layout(g, weight=g.ep[weight])
 
     layout = {g.vp.label[v]: list(layout[v]) for v in g.vertices()}
-    with open(outfile, 'w') as outf:
-        json.dump(layout, outf)
+    json.dump(layout, outfile)
 
 
 if __name__ == '__main__':
