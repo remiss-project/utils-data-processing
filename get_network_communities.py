@@ -6,13 +6,13 @@ import networkx.algorithms.community as nx_comm
 
 
 @click.command()
-@click.argument('network')
-@click.argument('outfile')
+@click.argument('network', type=click.Path(exists=True))
+@click.argument('outfile', type=click.File('w'))
 @click.option(
     '--component', 'component',
     type=click.Choice(['weak', 'strong']), default=None
 )
-@click.option('--weight', 'weight', default='weight')
+@click.option('--weight', 'weight', default='weight', show_default=True)
 def main(network, outfile, component, weight):
     graph = nx.read_gml(network)
 
@@ -38,8 +38,7 @@ def main(network, outfile, component, weight):
     comm = sorted(comm, key=len, reverse=True)
     comm = {node: i for i, c in enumerate(comm) for node in c}
 
-    with open(outfile, 'w') as outf:
-        json.dump(comm, outf)
+    json.dump(comm, outfile)
 
 
 if __name__ == '__main__':
