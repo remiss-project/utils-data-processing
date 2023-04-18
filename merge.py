@@ -11,7 +11,7 @@ from twarc import ensure_flattened
 @click.argument('outfile', type=click.File('w'))
 def main(infiles, outfile):
     tids = set()
-    infiles = [f for f in infiles if '.jsonl' in f.name]
+    infiles = [f for f in infiles if f.name.endswith('.jsonl')]
     size = sum([os.stat(f.name).st_size for f in infiles])
     with tqdm(total=size, unit='B') as progress:
         for infile in infiles:
