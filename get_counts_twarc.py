@@ -6,7 +6,7 @@ import click
 
 @click.command()
 @click.argument('infile', type=click.File('r'))
-@click.argument('outfile', type=click.Path())
+@click.argument('outfile', type=click.Path(dir_okay=False))
 @click.option(
     '--granularity', 'granularity',
     type=click.Choice(['day', 'hour', 'minute']),
