@@ -49,7 +49,7 @@ def main(infiles, outdir, component, layout, weight):
     infiles = [f for f in infiles if f.endswith('.gml')]
     for infile in tqdm(infiles):
         name = os.path.basename(infile)[:-4]
-        outfile = os.path.join(outdir, name + '.csv')
+        outfile = os.path.join(outdir, name + '.json')
         get_network_layout(infile, outfile, component, layout, weight)
 
 
