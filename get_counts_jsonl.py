@@ -28,7 +28,7 @@ def main(infile, outfile, granularity):
     with tqdm(total=os.stat(infile.name).st_size, unit='B') as progress:
         for line in infile:
             for t in ensure_flattened(json.loads(line)):
-                date = t['created_at'][5:get_index(granularity)]
+                date = t['created_at'][:get_index(granularity)]
                 if date in counts:
                     counts[date] += 1
                 else:
