@@ -20,6 +20,7 @@ def get_network_communities(network, outfile, weight, cutoff, best_n):
     ccs = nx.weakly_connected_components(graph)
     gcc = max(ccs, key=len)
     gcc = graph.subgraph(gcc)
+    del graph, null_edges, ccs
 
     comm = nx_comm.greedy_modularity_communities(
         gcc, weight=weight, cutoff=cutoff, best_n=best_n
