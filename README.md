@@ -2,7 +2,7 @@
 
 Alguns codis útils per a processar dades de [Twarc].
 
-## get\_counts_\jsonl.py
+## get\_counts\_jsonl.py
 
 ```
 python3 get_counts_jsonl.py --granularity [day|hour|minute] INFILE OUTFILE
